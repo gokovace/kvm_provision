@@ -1,2 +1,2 @@
 # kvm_provision
-Provision KVM virtual mashine
+Provision KVM virtual machine
