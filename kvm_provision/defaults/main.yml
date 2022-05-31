@@ -1,0 +1,16 @@
+---
+# defaults file for kvm_provision
+
+libvirt_pool_dir: "/var/lib/libvirt/images"
+vm_name: master1
+vm_vcpus: 2
+vm_ram_mb: 4096
+vm_net: default
+vm_root_pass: test123
+cleanup_tmp: no
+ssh_key: /home/gkovacevic/.ssh/localvm_key.pub
+
+ubuntu_image: ubuntu-18.04-server-cloudimg-amd64.img
+# centos_image: 
+
+image_path: /Software/ISO/
