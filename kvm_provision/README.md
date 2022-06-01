@@ -18,8 +18,12 @@ https://docs.ansible.com/ansible/latest/collections/community/libvirt/virt_modul
 Role Variables
 --------------
 
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Set up following variables:
+vm_type : ubuntu/centos
+vm_name: master1
+vm_vcpus: 2
+vm_ram_mb: 4096
+ssh_key: /home/gkovacevic/.ssh/localvm_key.pub
 
 Dependencies
 ------------

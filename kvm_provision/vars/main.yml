@@ -7,14 +7,14 @@ libvirt_pool_dir: "/var/lib/libvirt/images"
 vm_name: master1
 vm_vcpus: 2
 vm_ram_mb: 4096
-vm_net: default
+vm_net1: default
 vm_root_pass: test123
 cleanup_tmp: no
 ssh_key: /home/gkovacevic/.ssh/localvm_key.pub
 # new uuid is generated every time playbook is run
-uuid: 344bfd47-58ae-46b6-ae57-061014c93974
+uuid: 0842319f-35ce-48f2-8a12-c6dc77a176f0
 
-ubuntu_image: ubuntu-18.04-server-cloudimg-amd64.img
-# centos_image: 
+ubuntu_image: ubuntu18.04.img
+centos_image: CentOS-7-x86_64-GenericCloud.qcow2
 
-image_path: /Software/ISO/
+image_path: /Software/Images/

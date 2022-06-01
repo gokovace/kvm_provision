@@ -1,0 +1,4 @@
+- hosts: localhost
+  become: no
+  roles: 
+    - kvm_provision

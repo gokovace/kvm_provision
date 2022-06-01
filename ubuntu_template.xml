@@ -89,19 +89,13 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x5'/>
     </controller>
     <controller type='virtio-serial' index='0'>
-      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
-    <interface type='network'>
-      <source network='{{ vm_net }}'/>
+    <interface type='bridge'>
+      <source bridge='virbr0'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
-    <interface type='bridge'>
-      <source bridge='br02'/>
-      <model type='virtio'/>
-      <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
-    </interface>
-
     <serial type='pty'>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>

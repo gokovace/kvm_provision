@@ -1,2 +1,93 @@
 ---
 # tasks file for kvm_provision
+# tasks file for vm_setup
+- name: Load variables from files
+  include_vars:
+    dir: vars
+    extensions:
+        - yml
+        - yaml
+
+
+- name: Ensure ubuntu requirements in place
+  package:
+    name:
+      - libguestfs-tools
+      - python3-libvirt
+    state: present
+  become: yes
+
+- name: Get VMs list
+  community.libvirt.virt:
+    command: list_vms
+  register: existing_vms
+  changed_when: no
+
+- name: Create new uuid
+  shell: uuidgen
+  register: new_uuid
+
+- set_fact:
+    uuid_out: "{{ new_uuid.stdout }}"
+
+- name: Place new uuid in vars/main.yml
+  lineinfile:
+    path: kvm_provision/vars/main.yml
+    regexp: "uuid"
+    line: "uuid: {{ uuid_out }}"
+
+- name: Create VM if not exists
+  block:
+  - name: Copy ubuntu base image to libvirt directory
+    become: yes
+    copy:
+      src: "{{ image_path }}/{{ ubuntu_image }}"
+      dest: "{{ libvirt_pool_dir }}/{{ vm_name }}.qcow2"
+      mode: 0660
+      force: no
+    register: copy_results
+    when: vm_type == "ubuntu"
+
+  - name: Copy centos base image to libvirt directory
+    become: yes
+    copy:
+      src: "{{ image_path }}/{{ centos_image }}"
+      dest: "{{ libvirt_pool_dir }}/{{ vm_name }}.qcow2"
+      mode: 0660
+      force: no
+    register: copy_results
+    when: vm_type == "centos"
+    
+  - name: Configure the image
+    become: yes
+    command: |
+      virt-customize -a {{ libvirt_pool_dir }}/{{ vm_name }}.qcow2 \
+      --hostname {{ vm_name }} \
+      --root-password password:{{ vm_root_pass }} \
+      --ssh-inject 'root:file:{{ ssh_key }}' \
+      --uninstall cloud-init --selinux-relabel
+    when: copy_results.changed
+
+  - name: Define vm
+    community.libvirt.virt:
+      command: define
+      xml: "{{ lookup('template', 'vm-ubuntu-template.xml.j2') }}"
+    when: vm_type == "ubuntu"
+
+  - name: Define vm
+    community.libvirt.virt:
+      command: define
+      xml: "{{ lookup('template', 'vm-centos-template.xml.j2') }}"
+    when: vm_type == "centos"
+
+  when: "vm_name not in existing_vms.list_vms"
+
+
+- name: Ensure VM is started
+  community.libvirt.virt:
+    name: "{{ vm_name }}"
+    state: running
+  register: vm_start_results
+  until: "vm_start_results is success"
+  retries: 15
+  delay: 2
